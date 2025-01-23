@@ -23,9 +23,9 @@ export interface Objectives {
   description: string | null;
   creatorid: string;
   notifyAt: ColumnType<Date | null, Date | null, Date | null>;
-  createdAt: ColumnType<Date, Date | undefined, Date>;
-  updatedAt: ColumnType<Date, Date | undefined, Date>;
-  isCompleted: boolean;
+  createdAt: Generated<ColumnType<Date, Date | undefined, Date>>;
+  updatedAt: Generated<ColumnType<Date, Date | undefined, Date>>;
+  isCompleted: Generated<boolean>;
 }
 
 export interface UserObjectiveShares {

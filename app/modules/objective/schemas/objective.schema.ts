@@ -4,13 +4,13 @@ import type { FastifySchema } from "fastify";
 export const createObjectiveSchema = z.object({
     title: z.string().min(1).max(127),
     description: z.string().nullable().optional(),
-    notifyAt: z.date().nullable().optional()
+    notifyAt: z.string().datetime().nullable().optional()
 });
 
 export const updateObjectiveSchema = z.object({
     title: z.string().min(1).max(127).optional(),
     description: z.string().nullable().optional(),
-    notifyAt: z.date().nullable().optional(),
+    notifyAt: z.string().datetime().nullable().optional(),
     is_completed: z.boolean().optional()
 });
 

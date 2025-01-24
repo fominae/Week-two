@@ -1,10 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
+import { validate as isUUID } from "uuid";
 import { sqlCon } from "../../common/config/kysely-config";
 import { HttpStatusCode } from "../../common/enum/http-status-code";
 import * as objectiveRepository from "./repository.objective";
-import { CreateObjectiveInput, UpdateObjectiveInput } from "./schemas/objective.schema";
-import { validate as isUUID } from "uuid";
-import { GetObjectivesQuery } from "./schemas/objective.schema";
+import { CreateObjectiveInput, GetObjectivesQuery, UpdateObjectiveInput } from "./schemas/objective.schema";
 
 export async function updateObjective(
     req: FastifyRequest<{
@@ -91,3 +90,26 @@ export async function getObjectives(req: FastifyRequest<{ Querystring: GetObject
     }
 }
 
+export async function getObjectiveById(req: FastifyRequest<{ Params: { id: string } }>, rep: FastifyReply) {
+    const { id } = req.params;
+
+    if (!req.user?.id) {
+        return rep.code(HttpStatusCode.UNAUTHORIZED).send({ message: "Пользователь не авторизован" });
+    }
+
+    if (id && !isUUID(id)) {
+        return rep.code(HttpStatusCode.BAD_REQUEST).send({ error: "Неверный формат ID задачи" });
+    }
+
+    try {
+        const objective = await objectiveRepository.getObjectiveById(sqlCon, id);
+
+        if (objective.creatorid !== req.user.id) {
+            return rep.code(HttpStatusCode.FORBIDDEN).send({ message: "Нет доступа к данной задаче" });
+        }
+
+        return rep.code(HttpStatusCode.OK).send(objective);
+    } catch (error) {
+        return rep.code(HttpStatusCode.NOT_FOUND).send({ error: "Задача не найдена" });
+    }
+}

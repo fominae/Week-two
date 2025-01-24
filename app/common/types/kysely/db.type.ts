@@ -17,12 +17,13 @@ export interface Users {
   email: string;
 }
 
+export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 export interface Objectives {
   id: Generated<string>;
   title: string;
   description: string | null;
   creatorid: string;
-  notifyAt: ColumnType<Date | null, Date | null, Date | null>;
+  notifyAt: Timestamp | null;
   createdAt: Generated<ColumnType<Date, Date | undefined, Date>>;
   updatedAt: Generated<ColumnType<Date, Date | undefined, Date>>;
   isCompleted: Generated<boolean>;

@@ -1,22 +1,31 @@
-/user/login:
+/user/sign-up:
   post:
     tags:
       - User
-    summary: Sign in
-    security: [ ]
+    summary: User Registration
     requestBody:
       required: true
       content:
         application/json:
           schema:
             type: object
-            required: [ email, password ]
+            required: [ name, login, email, password ]
             properties:
+              name:
+                type: string
+                minLength: 1
+                maxLength: 12
+              login:
+                type: string
+                minLength: 1
+                maxLength: 127
               email:
                 type: string
                 format: email
+                maxLength: 127
               password:
                 type: string
+                minLength: 6
     responses:
       200:
         description: OK
@@ -27,9 +36,12 @@
               properties:
                 id:
                   type: string
-                access_token:
+                  format: uuid
+                accessToken:
                   type: string
       404:
         $ref: "#/definitions/404"
+      409:
+        $ref: "#/definitions/409"
       422:
         $ref: "#/definitions/422"

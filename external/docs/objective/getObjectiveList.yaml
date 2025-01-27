@@ -6,23 +6,16 @@
     security:
       - bearer: [ ]
     parameters:
-      - name: sortCreatedAt
+      - name: sortBy
         in: query
         required: false
         schema:
           type: string
           enum:
-            - asc
-            - desc
-      - name: sortNotifyAt
-        in: query
-        required: false
-        schema:
-          type: string
-          enum:
-            - asc
-            - desc
-      - name: sortTitle
+            - title
+            - createdAt
+            - notifyAt
+      - name: sortDirection
         in: query
         required: false
         schema:
@@ -42,14 +35,14 @@
           type: boolean
       - name: limit
         in: query
-        required: false
+        required: true
         schema:
           type: integer
           default: 10
           example: 10
       - name: offset
         in: query
-        required: false
+        required: true
         schema:
           type: integer
           default: 0

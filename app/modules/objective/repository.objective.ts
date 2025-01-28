@@ -1,18 +1,21 @@
-import { type Insertable, type Kysely, sql, Transaction } from "kysely";
+import { type Insertable, type Kysely, sql, Transaction, Updateable } from "kysely";
 import { DB, Objectives } from "../../common/types/kysely/db.type";
 import { GetObjectivesQuery } from "./schemas/get-all-objectives.schema";
-import { UpdateObjectiveInput } from "./schemas/update.schema";
 
 type InsertableObjectiveRowType = Insertable<Objectives>;
 
-export async function updateObjective(con: Kysely<DB> | Transaction<DB>, id: string, schema: UpdateObjectiveInput) {
+export async function updateObjective(con: Kysely<DB> | Transaction<DB>, id: string, entity: Updateable<Objectives>) {
     return await con
         .updateTable("objectives")
         .returningAll()
-        .set({ ...schema, updatedAt: sql`now()` })
+        .set({
+            ...entity,
+            updatedAt: sql`now()`
+        })
         .where("id", "=", id)
         .executeTakeFirst();
 }
+
 export async function create(con: Kysely<DB> | Transaction<DB>, entity: InsertableObjectiveRowType) {
     return await con.insertInto("objectives").returningAll().values(entity).executeTakeFirstOrThrow();
 }
@@ -36,13 +39,9 @@ export async function getObjectives(con: Kysely<DB> | Transaction<DB>, creatorid
         query = query.orderBy(filters.sortBy, filters.sortDirection);
     }
 
-    if (filters.limit) {
-        query = query.limit(filters.limit);
-    }
+    query = query.limit(filters.limit);
 
-    if (filters.offset) {
-        query = query.offset(filters.offset);
-    }
+    query = query.offset(filters.offset);
 
     return await query.execute();
 }

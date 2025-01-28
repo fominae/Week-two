@@ -10,5 +10,5 @@ export const objectiveRouter = async (app: FastifyInstance) => {
     app.post("", { schema: createObjectiveFSchema, config: { isPublic: false } }, objectiveController.create);
     app.patch("/:id", { schema: updateObjectiveFSchema, config: { isPublic: false }, preHandler: app.auth([checkAccessObjective]) }, objectiveController.updateObjective);
     app.get("", { schema: getObjectivesFSchema, config: { isPublic: false } }, objectiveController.getObjectives);
-    app.get("/:id", { schema: uuidFSchema, config: { isPublic: false }, preHandler: app.auth([checkAccessObjective]) }, objectiveController.getObjectiveById);
+    app.get("/:id", { schema: uuidFSchema, preHandler: app.auth([checkAccessObjective]) }, objectiveController.getObjectiveById);
 };

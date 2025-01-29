@@ -38,3 +38,11 @@ export async function getObjectiveById(req: FastifyRequest<{ Params: uuidSchema 
     const objective = await objectiveRepository.getObjectiveById(sqlCon, id);
     return rep.code(HttpStatusCode.OK).send(objective);
 }
+
+export async function deleteObjective(req: FastifyRequest<{ Params: uuidSchema }>, rep: FastifyReply) {
+    const { id } = req.params;
+    await objectiveRepository.deleteObjective(sqlCon, id);
+    return rep.code(HttpStatusCode.OK).send({
+        message: "Задача удалена!"
+    });
+}

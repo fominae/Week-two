@@ -45,3 +45,6 @@ export async function getObjectives(con: Kysely<DB> | Transaction<DB>, creatorid
 
     return await query.execute();
 }
+export async function deleteObjective(con: Kysely<DB> | Transaction<DB>, id: string) {
+    return await con.deleteFrom("objectives").where("id", "=", id).execute();
+}

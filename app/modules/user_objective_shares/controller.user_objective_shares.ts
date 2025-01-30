@@ -17,3 +17,9 @@ export async function revokeObjectiveAccess(req: FastifyRequest<{ Params: uuidSc
     await shareRepository.revokeAccess(sqlCon, id);
     return rep.code(HttpStatusCode.OK).send({ message: "Доступ удалён" });
 }
+export async function getUsersWithAccess(req: FastifyRequest<{ Params: uuidSchema }>, rep: FastifyReply) {
+    const { id: objectiveid } = req.params;
+    const usersWithAccess = await shareRepository.getSharedUsers(sqlCon, objectiveid);
+
+    return rep.code(HttpStatusCode.OK).send(usersWithAccess);
+}

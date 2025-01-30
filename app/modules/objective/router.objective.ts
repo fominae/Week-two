@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import { checkAccessUserObjectiveShare } from "../user_objective_shares/guard/check-access-user-objective-shares";
 import * as objectiveController from "./controller.objective";
 import { checkAccessObjective } from "./guard/check-access-objective";
 import { createObjectiveFSchema } from "./schemas/create.schema";
@@ -10,6 +11,6 @@ export const objectiveRouter = async (app: FastifyInstance) => {
     app.post("", { schema: createObjectiveFSchema }, objectiveController.create);
     app.patch("/:id", { schema: updateObjectiveFSchema, preHandler: app.auth([checkAccessObjective]) }, objectiveController.updateObjective);
     app.get("", { schema: getObjectivesFSchema }, objectiveController.getObjectives);
-    app.get("/:id", { schema: uuidFSchema }, objectiveController.getObjectiveById);
+    app.get("/:id", { schema: uuidFSchema, preHandler: app.auth([checkAccessObjective, checkAccessUserObjectiveShare]) }, objectiveController.getObjectiveById);
     app.delete("/:id", { schema: uuidFSchema, preHandler: app.auth([checkAccessObjective]) }, objectiveController.deleteObjective);
 };

@@ -11,7 +11,7 @@ export async function getSharedUsers(con: Kysely<DB>, objectiveid: string) {
     return await con
         .selectFrom("user_objective_shares")
         .innerJoin("users", "users.id", "user_objective_shares.userid")
-        .select(["users.id", "users.name", "users.email"])
+        .select(["users.id", "users.name"])
         .where("user_objective_shares.objectiveid", "=", objectiveid)
         .execute();
 }

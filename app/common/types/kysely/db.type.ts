@@ -31,8 +31,8 @@ export interface Objectives {
 
 export interface UserObjectiveShares {
   id: Generated<string>;
-  userId: string;
-  objectiveId: string;
+  userid: string;
+  objectiveid: string;
 }
 
 export interface DB {

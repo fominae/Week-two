@@ -7,9 +7,9 @@ import { updateObjectiveFSchema } from "./schemas/update.schema";
 import { uuidFSchema } from "./schemas/uuid.schema";
 
 export const objectiveRouter = async (app: FastifyInstance) => {
-    app.post("", { schema: createObjectiveFSchema, config: { isPublic: false } }, objectiveController.create);
-    app.patch("/:id", { schema: updateObjectiveFSchema, config: { isPublic: false }, preHandler: app.auth([checkAccessObjective]) }, objectiveController.updateObjective);
-    app.get("", { schema: getObjectivesFSchema, config: { isPublic: false } }, objectiveController.getObjectives);
-    app.get("/:id", { schema: uuidFSchema, preHandler: app.auth([checkAccessObjective]) }, objectiveController.getObjectiveById);
+    app.post("", { schema: createObjectiveFSchema }, objectiveController.create);
+    app.patch("/:id", { schema: updateObjectiveFSchema, preHandler: app.auth([checkAccessObjective]) }, objectiveController.updateObjective);
+    app.get("", { schema: getObjectivesFSchema }, objectiveController.getObjectives);
+    app.get("/:id", { schema: uuidFSchema }, objectiveController.getObjectiveById);
     app.delete("/:id", { schema: uuidFSchema, preHandler: app.auth([checkAccessObjective]) }, objectiveController.deleteObjective);
 };

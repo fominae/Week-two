@@ -7,13 +7,7 @@ export async function checkAccessUserObjectiveShare(req: FastifyRequest) {
     const { id } = req.params as { id: string };
     const userid = req.user.id;
 
-    // Проверяем, есть ли у пользователя права на задачу в таблице user_objective_share
-    const sharedAccess = await sqlCon
-        .selectFrom("user_objective_shares") // Таблица с доступами
-        .where("objectiveid", "=", id)
-        .where("userid", "=", userid!)
-        .select("id") // Достаточно проверить, есть ли запись
-        .executeTakeFirst();
+    const sharedAccess = await sqlCon.selectFrom("user_objective_shares").where("objectiveid", "=", id).where("userid", "=", userid!).select("id").executeTakeFirst();
 
     if (!sharedAccess) {
         throw new CustomException(HttpStatusCode.FORBIDDEN, "Доступ к задаче запрещён", {

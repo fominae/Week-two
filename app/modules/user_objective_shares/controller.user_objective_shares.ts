@@ -17,7 +17,11 @@ export async function shareObjective(req: FastifyRequest<{ Body: ShareObjectiveI
     if (req.user.id === userid) {
         return rep.code(HttpStatusCode.BAD_REQUEST).send({ message: "Нельзя предоставить доступ самому себе" });
     }
-    if (user?.email) {
+    const existingAccess = await shareRepository.checkUserAccess(sqlCon, objectiveid, userid);
+    if (existingAccess.length > 0) {
+        return rep.code(HttpStatusCode.CONFLICT).send({ message: "Пользователь уже имеет доступ" });
+    }
+    if (user.email) {
         await sendEmail(user.email, "Доступ к задаче предоставлен", `Вы получили доступ к задаче: ${objectiveid}.`);
     }
     await shareRepository.shareObjective(sqlCon, { userid, objectiveid });
@@ -33,7 +37,7 @@ export async function revokeObjectiveAccess(req: FastifyRequest<{ Body: ShareObj
     if (req.user.id === userid) {
         return rep.code(HttpStatusCode.BAD_REQUEST).send({ message: "Нельзя удалить доступ у самого себя" });
     }
-    await shareRepository.revokeAccess(sqlCon, id);
+    await shareRepository.revokeAccess(sqlCon, id, userid);
     return rep.code(HttpStatusCode.OK).send({ message: "Доступ удалён" });
 }
 export async function getUsersWithAccess(req: FastifyRequest<{ Params: uuidSchema }>, rep: FastifyReply) {

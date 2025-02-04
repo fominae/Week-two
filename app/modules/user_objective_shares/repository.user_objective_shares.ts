@@ -15,6 +15,15 @@ export async function getSharedUsers(con: Kysely<DB>, objectiveid: string) {
         .where("user_objective_shares.objectiveid", "=", objectiveid)
         .execute();
 }
-export async function revokeAccess(con: Kysely<DB>, objectiveId: string) {
-    return await con.deleteFrom("user_objective_shares").where("objectiveid", "=", objectiveId).execute();
+export async function revokeAccess(con: Kysely<DB>, objectiveId: string, userid: string) {
+    return await con.deleteFrom("user_objective_shares").where("objectiveid", "=", objectiveId).where("userid", "=", userid).execute();
+}
+
+export async function checkUserAccess(con: Kysely<DB>, objectiveId: string, userId: string) {
+    return await con
+        .selectFrom("user_objective_shares")
+        .select("id")
+        .where("objectiveid", "=", objectiveId)
+        .where("userid", "=", userId)
+        .execute();
 }
